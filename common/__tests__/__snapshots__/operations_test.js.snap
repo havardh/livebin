@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Operations del that it create a message 1`] = `
+Object {
+  "characters": "test",
+  "type": "delete",
+}
+`;
+
+exports[`Operations generate add after 1`] = `
+Array [
+  Object {
+    "n": 2,
+    "type": "retain",
+  },
+  Object {
+    "characters": "3",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`Operations generate add before 1`] = `
+Array [
+  Object {
+    "characters": "1",
+    "type": "insert",
+  },
+  Object {
+    "n": 2,
+    "type": "retain",
+  },
+]
+`;
+
+exports[`Operations generate add inside 1`] = `
+Array [
+  Object {
+    "n": 1,
+    "type": "retain",
+  },
+  Object {
+    "characters": "2",
+    "type": "insert",
+  },
+  Object {
+    "n": 1,
+    "type": "retain",
+  },
+]
+`;
+
+exports[`Operations generate add same character 1`] = `
+Array [
+  Object {
+    "n": 2,
+    "type": "retain",
+  },
+  Object {
+    "characters": "1",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`Operations generate delete first 1`] = `
+Array [
+  Object {
+    "characters": "1",
+    "type": "delete",
+  },
+  Object {
+    "n": 2,
+    "type": "retain",
+  },
+]
+`;
+
+exports[`Operations generate delete inside 1`] = `
+Array [
+  Object {
+    "n": 1,
+    "type": "retain",
+  },
+  Object {
+    "characters": "2",
+    "type": "delete",
+  },
+  Object {
+    "n": 1,
+    "type": "retain",
+  },
+]
+`;
+
+exports[`Operations generate delete last 1`] = `
+Array [
+  Object {
+    "n": 2,
+    "type": "retain",
+  },
+  Object {
+    "characters": "3",
+    "type": "delete",
+  },
+]
+`;
+
+exports[`Operations generate delete same character 1`] = `
+Array [
+  Object {
+    "n": 2,
+    "type": "retain",
+  },
+  Object {
+    "characters": "1",
+    "type": "delete",
+  },
+]
+`;
+
+exports[`Operations generate that it throws if zero characters are changed 1`] = `"not a one character change"`;
+
+exports[`Operations insert that it create a message 1`] = `
+Object {
+  "characters": "test",
+  "type": "insert",
+}
+`;
+
+exports[`Operations retain that it create a message 1`] = `
+Object {
+  "n": 2,
+  "type": "retain",
+}
+`;

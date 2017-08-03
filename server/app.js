@@ -1,7 +1,7 @@
-import express from "express";
+import {app, server} from "./sharejs";
+
 import bodyParser from "body-parser";
 
-const app = express();
 
 app.use(bodyParser.json());
 
@@ -20,4 +20,4 @@ app.get("/api/file", (req, res) => {
   res.end();
 });
 
-export default app;
+export {app, server};

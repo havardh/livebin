@@ -1,46 +1,141 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
+import generate from 'project-name-generator';
 
-import store from "./store";
-import {onChange, poll} from "./actions";
+import {diffChars} from "diff";
 
-import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/java';
+import 'brace/mode/javascript';
 import 'brace/theme/monokai';
+import sharedb from "sharedb/lib/client";
+import {type} from "ot-text";
+sharedb.types.register(type);
+import './styles.css';
+
+function convert(operations) {
+  return operations.map(op => {
+
+    if (op.added) {
+      return op.value;
+    } else if (op.removed) {
+      return {d: op.value.length};
+    } else {
+      return op.value.length;
+    }
+  });
+}
 
 class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {code: ""};
+
+    const {user, file} = props.match.params;
+
+    const socket = new WebSocket('ws://' + window.location.host);
+    const connection = new sharedb.Connection(socket);
+    const doc = connection.get(
+      props.match.params.user || "*",
+      props.file
+    );
+
+    doc.subscribe(() => {
+      if (!doc.type) {
+        doc.create("", "text");
+      }
+
+      doc.on('op', (op, source) => {
+        if (!source) {
+          this.setState({ code: doc.data });
+        }
+      });
+    });
+
+    this.state = { code: "", doc, mode: "java" };
   }
 
-  componentWillMount() {
-    store.subscribe(() => this.onStoreChange());
-    poll();
-  }
-
-  onStoreChange() {
-    const code = store.getText();
-    this.setState({code});
+  componentDidMount() {
+    this.state.doc.subscribe(() => {
+      this.setState({
+        code: this.state.doc.data
+      });
+    })
   }
 
   onChange = (newCode) => {
-    onChange(newCode);
+    const ops = convert(diffChars(this.state.doc.data, newCode));
+    this.state.doc.submitOp(ops, {}, () => {
+      this.setState({
+        code: this.state.doc.data
+      });
+    });
+  }
+
+  setMode = ({target}) => {
+    const {value} = target;
+    this.setState({mode: value});
   }
 
   render() {
     return (
       <div>
+        <select value={this.state.mode} onChange={this.setMode}>
+          <option value="java">Java</option>
+          <option value="javascript">Javascript</option>
+        </select>
+
         <AceEditor
-          mode="java"
+          mode={this.state.mode}
           theme="monokai"
           onChange={this.onChange}
           name="UNIQUE_ID_OF_DIV"
           value={this.state.code}
           editorProps={{$blockScrolling: true}}
+          height="100%"
+          width="100%"
         />
+      </div>
+    );
+  }
+}
+
+class Landing extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: generate().dashed,
+      file: generate().dashed
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        <h1> Ace + ShareJS = livebin.xyz </h1>
+        <p>An Open Source collabrative editor that you can host yourself.</p>
+
+        <div>
+          <h2>Get hacking</h2>
+
+          <div>
+            livebin.xyz/
+            <input value={this.state.user} onChange={event => this.setState({user: event.target.value})} /> /
+            <input value={this.state.file} onChange={event => this.setState({file: event.target.value})} />&nbsp;
+            <Link to={`${this.state.user}/${this.state.file}`}>Go!</Link>
+          </div>
+          <div>
+            livebin.xyz/
+            <input value={this.state.file} onChange={event => this.setState({file: event.target.value})} />&nbsp;
+            <Link to={this.state.file}>Go!</Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -48,7 +143,13 @@ class App extends React.Component {
 
 ReactDOM.render(
   <div>
-    <App />
+    <Router>
+      <div>
+        <Route exact path="/" component={Landing} />
+        <Route path="/:user/:file" component={App} />
+        <Route path="/:file" component={App} />
+      </div>
+    </Router>
   </div>,
   document.getElementById('app')
 );

@@ -1,6 +1,6 @@
 import webpack from "webpack";
 import path from "path";
-import app from "./server/app";
+import {app, server} from "./server/app";
 
 const webpackConfig = require('./webpack.config.js');
 const compiler = webpack(webpackConfig);
@@ -14,7 +14,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/index.html'));
 });
 
-app.listen(8080, '0.0.0.0', err => {
+server.listen(8081, '0.0.0.0', err => {
   if (err) {
     console.log(err);
     return;

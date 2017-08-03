@@ -3,7 +3,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 var entry = [
-  //'webpack-hot-middleware/client', 
+  //'webpack-hot-middleware/client',
   './client/index.js'
 ];
 
@@ -32,7 +32,7 @@ module.exports = {
         }
       },
       { test: /\.json$/, loaders: [ 'json-loader' ] },
-      { test: /\.css$/, loaders: [ 'style', 'css' ] },
+      { test: /\.css$/, loaders: [ 'css-loader' ] },
       { test: /\.(woff2?|ttf|eot|svg)$/, loader: 'url?limit=10000' },
       { test: /\.styl$/, loaders: ['style', 'css', 'stylus'] },
     ]
