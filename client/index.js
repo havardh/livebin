@@ -16,11 +16,14 @@ import 'brace/theme/monokai';
 import sharedb from "sharedb/lib/client";
 import {type} from "ot-text";
 sharedb.types.register(type);
+
 import './styles.css';
+import './codemirror.css';
 
-function convert(operations) {
+function generateOperations(oldCode, newCode) {
+  const operations = diffChars(oldCode, newCode);
+
   return operations.map(op => {
-
     if (op.added) {
       return op.value;
     } else if (op.removed) {
@@ -57,23 +60,23 @@ class App extends React.Component {
       });
     });
 
-    this.state = { code: "", doc, mode: "java" };
+    this.state = {
+      code: "Loading ...",
+      doc,
+      mode: "java"
+    };
   }
 
   componentDidMount() {
     this.state.doc.subscribe(() => {
-      this.setState({
-        code: this.state.doc.data
-      });
+      this.setState({ code: this.state.doc.data });
     })
   }
 
   onChange = (newCode) => {
-    const ops = convert(diffChars(this.state.doc.data, newCode));
+    const ops = generateOperations(this.state.doc.data, newCode);
     this.state.doc.submitOp(ops, {}, () => {
-      this.setState({
-        code: this.state.doc.data
-      });
+      this.setState({ code: this.state.doc.data });
     });
   }
 
@@ -109,29 +112,19 @@ class Landing extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      user: generate().dashed,
-      file: generate().dashed
-    };
+    this.state = { file: generate().dashed };
   }
 
   render() {
     return (
       <div>
-        <h1> Ace + ShareJS = livebin.xyz </h1>
+        <h1> Ace + ShareDB = livebin.xyz </h1>
         <p>An Open Source collabrative editor that you can host yourself.</p>
 
         <div>
           <h2>Get hacking</h2>
-
           <div>
-            livebin.xyz/
-            <input value={this.state.user} onChange={event => this.setState({user: event.target.value})} /> /
-            <input value={this.state.file} onChange={event => this.setState({file: event.target.value})} />&nbsp;
-            <Link to={`${this.state.user}/${this.state.file}`}>Go!</Link>
-          </div>
-          <div>
-            livebin.xyz/
+            {document.location.host}/
             <input value={this.state.file} onChange={event => this.setState({file: event.target.value})} />&nbsp;
             <Link to={this.state.file}>Go!</Link>
           </div>

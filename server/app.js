@@ -1,23 +1,27 @@
-import {app, server} from "./sharejs";
+import express from "express";
+import http from "http";
 
-import bodyParser from "body-parser";
+import ShareDB from "sharedb";
+import {type} from "ot-text";
 
+import WebSocket from "ws";
+import WebSocketJSONStream from "websocket-json-stream";
 
-app.use(bodyParser.json());
+ShareDB.types.register(type);
 
-const files = {};
+const app = express();
+const backend = new ShareDB();
 
-app.post("/api/file", (req, res) => {
-  const {text} = req.body;
-  files["file"] = text;
+const server = http.createServer(app);
 
-  res.json({msg: "hello"});
-  res.end();
+const wss = new WebSocket.Server({server});
+wss.on('connection', (ws, res) => {
+  const stream = new WebSocketJSONStream(ws);
+  backend.listen(stream);
 });
 
-app.get("/api/file", (req, res) => {
-  res.json({text: files["file"]});
-  res.end();
+wss.on('error', function (error) {
+  throw error;
 });
 
-export {app, server};
+export {server, app};
