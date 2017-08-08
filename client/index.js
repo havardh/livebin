@@ -43,9 +43,10 @@ class App extends React.Component {
 
     const socket = new WebSocket('ws://' + window.location.host);
     const connection = new sharedb.Connection(socket);
+    
     const doc = connection.get(
       props.match.params.user || "*",
-      props.file
+      file
     );
 
     doc.subscribe(() => {
