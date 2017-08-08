@@ -41,9 +41,16 @@ class App extends React.Component {
 
     const {user, file} = props.match.params;
 
-    const socket = new WebSocket('ws://' + window.location.host);
+    let protocol = "";
+    if (window.location.protocol.startsWith("https")) {
+      protocol = "wss://"
+    } else {
+      protocol = "ws://";
+    }
+
+    const socket = new WebSocket(protocol + window.location.host);
     const connection = new sharedb.Connection(socket);
-    
+
     const doc = connection.get(
       props.match.params.user || "*",
       file
