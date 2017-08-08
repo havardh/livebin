@@ -64,7 +64,7 @@ class App extends React.Component {
     this.state = {
       code: "Loading ...",
       doc,
-      mode: "java"
+      mode: "javascript"
     };
   }
 
