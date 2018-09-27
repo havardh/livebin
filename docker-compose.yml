@@ -1,0 +1,25 @@
+version: '2'
+services:
+  livebin:
+    restart: always
+    image: havardh/livebin:0.1.1
+    container_name: livebin
+    depends_on:
+      - mongo
+    privileged: true
+    ports:
+      - 80:80
+    links:
+      - mongo
+    volumes:
+      - /app
+    environment:
+      MONGO_URL: mongo/livebin
+  mongo:
+    restart: always
+    image: mongo
+    container_name: mongo
+    expose:
+      - 27017
+    volumes:
+      - ~/mongo_data:/data/db

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon index.js --exec babel-node --presets es2015",
     "test:watch": "jest --watch",
+    "deploy": "now --public --npm -e MONGO_URL=ds029665.mlab.com:29665/livebin -e MONGO_USERNAME=livebin -e MONGO_PASSWORD=@livebin-mongo-password",
     "test": "jest"
   },
   "dependencies": {

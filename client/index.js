@@ -126,8 +126,8 @@ class Landing extends React.Component {
   render() {
     return (
       <div>
-        <h1> Ace + ShareDB = livebin.xyz </h1>
-        <p>An Open Source collabrative editor that you can host yourself.</p>
+        <h1> <a href="https://github.com/ajaxorg/ace">Ace</a> + <a href="https://github.com/share/sharedb">ShareDB</a> = livebin </h1>
+        <p>An Open Source collaborative editor that you can host yourself.</p>
 
         <div>
           <h2>Get hacking</h2>
